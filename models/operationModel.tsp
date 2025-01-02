@@ -17,7 +17,7 @@ model FileAttachment {
     createdAt: utcDateTime; 
 }
 
-model ResponseOK {
+model ResponseFormLandTitleDeedOK {
     @example(200)
     code: int32;
     status: boolean;

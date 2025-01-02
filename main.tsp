@@ -3,6 +3,7 @@ import "@typespec/rest";
 import "@typespec/openapi3";
 
 import "./models/operationModel.tsp";
+import "./models/userModel.tsp";
 import "./models/responseError.tsp";
 
 
@@ -27,6 +28,9 @@ namespace operation_inspector {
       Authorization: string;
 
       @query
+      ref_title_deed_type_id: int32;
+
+      @query
       title_deed_number: string;
     
       @query
@@ -36,7 +40,7 @@ namespace operation_inspector {
     @get
     op ListLandTitleDeed(...QueryLandTitleDeed): {
       @statusCode statusCode: 200;
-      @body data: ResponseOK[];
+      @body data: ResponseFormLandTitleDeedOK[];
     } | {
       @statusCode statusCode: 401;
       @body data: ResponseUnauthorized;
@@ -50,4 +54,62 @@ namespace operation_inspector {
       @statusCode statusCode: 500;
       @body data: ResponseInternalServerError;
     };
+}
+
+@tag("users")
+@route("users/new_assign")
+namespace User {
+  model QueryUserNewAssign {
+    @header
+    @example("Bearer <Add access token here>")
+    Authorization: string;
+
+    @query
+    from_user_id: int32;
+  }
+
+  @get
+  op ListUserNewAssign(...QueryUserNewAssign): {
+    @statusCode statusCode: 200;
+    @body data: ResponseOKUserAssignList[];
+  } | {
+    @statusCode statusCode: 401;
+    @body data: ResponseUnauthorized;
+  } | {
+    @statusCode statusCode: 422;
+    @body data: ResponseUnprocessableEntit;
+  } | {
+    @statusCode statusCode: 400;
+    @body data: ResponseBadRequest;
+  } | {
+    @statusCode statusCode: 500;
+    @body data: ResponseInternalServerError;
+  };
+
+
+  model BodyUserNewAssign {
+    @body
+    data :{
+      form_user_id: int32;
+      assign_user_id: int32;
+    };
+  }
+
+  @put
+  op CreateUserNewAssign(...BodyUserNewAssign): {
+    @statusCode statusCode: 202;
+    @body data: ResponseNoData;
+  } | {
+    @statusCode statusCode: 401;
+    @body data: ResponseUnauthorized;
+  } | {
+    @statusCode statusCode: 422;
+    @body data: ResponseUnprocessableEntit;
+  } | {
+    @statusCode statusCode: 400;
+    @body data: ResponseBadRequest;
+  } | {
+    @statusCode statusCode: 500;
+    @body data: ResponseInternalServerError;
+  };
 }
